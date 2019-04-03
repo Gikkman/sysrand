@@ -1,34 +1,42 @@
-local socket = require("socket")
-local server = nil
+local url = "http://127.0.0.1:7911"
+local frameCount = 0
 
-local port = 12097
-
-function server.start()
-    --create the server
-    server = socket.bind("*", port, 1)
-    if (server == nil) then
-        printOutput("Error creating server. Port is probably in use.")
-        return false
+function request() 
+    res = comm.httpGet(url)
+    if (res ~= '') then
+        action = string.sub(res, 1, 4)
+        print("Action: " .. action)
+        path = string.sub(res, 6)
+        print("Path: " .. path)
+        if (action == 'PAUS') then
+            client.SetSoundOn(false)
+            client.pause()
+            comm.httpPost(url, "")
+        elseif (action == 'GAME') then
+            client.openrom(path)
+            comm.httpPost(url, "")
+            request()
+        elseif (action == 'SAVE') then
+            savestate.save(path)
+            comm.httpPost(url, "")
+            request()
+        elseif (action == 'LOAD') then
+            savestate.load(path)
+            comm.httpPost(url, "")
+            request()
+        elseif (action == 'CONT') then
+            client.unpause()
+            client.SetSoundOn(true)
+            comm.httpPost(url, "")
+        end
     end
-
-    local ip, setport = server:getsockname()
-    server:settimeout(0) -- non-blocking
-    printOutput("Created server on port " .. setport)
 end
 
-function server.listen()
-    if (server == nil or host.locked) then
-        return false
+while true do
+    if (math.fmod(frameCount, 12) == 0) then 
+        request()
     end
-    
-    --wait for the connection from the client
-    local client, err = server:accept()
 
-    --end execution if a client does not connect in time
-    if (client == nil) then
-        if err ~= "timeout" then
-            printOutput("Server error: ", err)
-        end
-          return false
-    end
+    emu.yield()
+    frameCount = frameCount + 1
 end

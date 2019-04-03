@@ -1,13 +1,14 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 const url = require('url')
 const path = require('path')
-const {ipcMain} = require('electron')
 
-const {sender} = require('./lib/sender')
+const server = require('./lib/server')();
 
 let win
 
 function createWindow() { 
+  server.init();
+
    win = new BrowserWindow({width: 800, height: 600, 
     webPreferences: {
       nodeIntegration: true
@@ -49,7 +50,22 @@ ipcMain.on('openFile', (event) => {
   }
 })  
 
+let count = 0;
 ipcMain.on('send', (event) => {
-  sender();
+  if(count++ % 2 == 0) {
+    server.push("PAUS");
+    server.push("SAVE", "C:\\Games\\Goemon - New Age Shutsudou! (Japan).State");
+    server.push("GAME", "C:\\Games\\SOS (USA).sfc");
+    server.push("LOAD", "C:\\Games\\SOS (USA).State");
+    server.push("CONT");
+  }
+  else {
+    server.push("PAUS");
+    server.push("SAVE", "C:\\Games\\SOS (USA).State");
+    server.push("GAME", "C:\\Games\\Goemon - New Age Shutsudou! (Japan).gba");
+    server.push("LOAD", "C:\\Games\\Goemon - New Age Shutsudou! (Japan).State");
+    server.push("CONT");
+  }
 })
+
 app.on('ready', createWindow)
