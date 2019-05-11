@@ -2,6 +2,8 @@ const {app, BrowserWindow} = require('electron')
 const url = require('url')
 const path = require('path')
 
+console.log("Starting node " + process.version);
+
 /************************************************************************
  *  Globals
  ************************************************************************/
@@ -14,11 +16,11 @@ global.win;
 require('./lib/server').init();
 require('./lib/bizhawk');
 require('./lib/filetree');
+require('./lib/gamemeta');
 
 /************************************************************************
  *  Main behaviour
  ************************************************************************/
-
 function createWindow() { 
   win = new BrowserWindow({width: 800, height: 600, 
     webPreferences: {
