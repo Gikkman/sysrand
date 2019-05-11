@@ -1,10 +1,20 @@
 const {ipcRenderer} = require('electron');
 
-ipcRenderer.on('fileData', (event, data) => { 
-    console.log("Event 'fileData' received.");
-    makeTree(data);
-})
-         
+ipcRenderer
+    .on('fileData', (event, data) => { 
+        console.log("Event 'fileData' received.");
+        makeTree(data);
+    })
+    .on('metadata', (event, data) => {
+        console.log(data);
+    });
+
+function onLoad() {
+    ipcRenderer.send('getMetadata');
+    console.log("Event 'getMetadata' sent.");  
+};
+onLoad();
+
 function directory() {
     ipcRenderer.send('openDir');
     console.log("Event 'openDir' sent.");  
