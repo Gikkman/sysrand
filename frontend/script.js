@@ -52,6 +52,12 @@ function makeTree(data) {
                                 let path = selectedNode.original.path;
                                 let file = selectedNode.original.file;
                                 loadGame(path, file);
+                            },
+                        },
+                        B:{
+                            label:"Console log",
+                            action: function(context) {
+                                console.log(selectedNode.original);
                             }
                         }
                     }
