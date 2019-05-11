@@ -1,17 +1,24 @@
 const {ipcRenderer} = require('electron');
 
+/************************************************************************
+ *  Event listeners
+ ************************************************************************/
 ipcRenderer
-    .on('fileData', (event, data) => { 
-        console.log("Event 'fileData' received.");
-        makeTree(data);
+    .on('openDir-res', (event, path) => { 
+        console.log("Event 'openDir-res' received. Received data: " + path);
+        makeTree(path);
     })
-    .on('metadata', (event, data) => {
-        console.log(data);
+    .on('getAllMetadata-res', (event, obj) => {
+        console.log("Event 'getAllMetadata-res' received. Received data: ");
+        console.log(obj);
     });
 
+/************************************************************************
+ *  Explicit methods
+ ************************************************************************/
 function onLoad() {
-    ipcRenderer.send('getMetadata');
-    console.log("Event 'getMetadata' sent.");  
+    ipcRenderer.send('getAllMetadata');
+    console.log("Event 'getAllMetadata' sent.");  
 };
 onLoad();
 
@@ -25,7 +32,10 @@ function loadGame(path, game) {
     console.log("Event 'loadGame' sent.");
 }
 
-function makeTree(data) {
+/************************************************************************
+ *  JSTree
+ ************************************************************************/
+function makeTree(path) {
     $('#container')
     .on("open_node.jstree", (e, data) => {
         $('#container').jstree(true).set_type(data.node.id, "dir-open");
@@ -35,7 +45,17 @@ function makeTree(data) {
     })
     .jstree({
         'core' : {
-            'data' : data
+            'data' : {
+                'async': true,
+                'url': (node) => {
+                    return node.id === '#' ?
+                        'http://localhost:7911/scan/' + encodeURIComponent(path) :
+                        'http://localhost:7911/scan/' + encodeURIComponent(node.original.path);
+                },
+                'data' : (node) => {
+                    return { 'id' : node.id };
+                }
+            }
         },
         "plugins": ["wholerow", "types", "contextmenu"],
         "types" : {
@@ -53,26 +73,29 @@ function makeTree(data) {
             }
           },
         "contextmenu": {
-            "items": function(selectedNode) {
-                if(selectedNode.type === 'file') {
-                    return {
-                        A:{
-                            label:"Load game",
-                            action: function(context) {
-                                let path = selectedNode.original.path;
-                                let file = selectedNode.original.file;
-                                loadGame(path, file);
-                            },
-                        },
-                        B:{
-                            label:"Console log",
-                            action: function(context) {
-                                console.log(selectedNode.original);
-                            }
-                        }
-                    }
-                }
-            }
+            "items": contextMenuItem
         },
     });
+}
+
+function contextMenuItem(selectedNode) {
+    let items = {};
+
+    if(selectedNode.type === 'file') {
+        items.A = {
+            label:"Load game",
+            action: function(context) {
+                let path = selectedNode.original.path;
+                let file = selectedNode.original.file;
+                loadGame(path, file);
+            }};
+    }
+
+    items.B = {
+        label:"Console log",
+        action: function(context) {
+            console.log(selectedNode.original);
+        }};
+
+    return items;
 }
