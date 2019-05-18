@@ -1,16 +1,46 @@
 {
-  "name": "electron-attempt",
+  "name": "sysrand",
   "version": "1.0.0",
-  "description": "",
+  "description": "App for making Bizhawk load random games",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "release-this": "build"
   },
+
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
+
   "dependencies": {
+    "electron-log": "^3.0.5",
+    "electron-unhandled": "^2.2.0",
+    "express": "^4.16.4",
+    "sqlite3": "^4.0.8"
+  },
+
+  "devDependencies": {
     "electron": "^5.0.1",
-    "express": "^4.16.4"
+    "electron-builder": "^20.40.2"
+  },
+
+  "build": {
+    "productName": "System Randomizer",
+    "appId": "com.gikkman.sysrand",
+    "prune": true,
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
+    "portable": {
+      "unpackDirName": "unpack",
+      "artifactName": "System Randomizer.exe"
+    },
+    "directories": {
+      "output": "./build",
+      "buildResources": "electron/buildResources"
+    }
   }
 }

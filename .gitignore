@@ -63,3 +63,6 @@ typings/
 # my own
 states/
 gamemeta.json
+file.db
+metadata.json
+build/

@@ -1,14 +1,25 @@
 const {app, BrowserWindow} = require('electron')
 const url = require('url')
 const path = require('path')
+const sqlite3 = require('sqlite3');
+const log = require('electron-log');
+const unhandled = require('electron-unhandled');
 
 console.log("Starting node " + process.version);
 
 /************************************************************************
  *  Globals
  ************************************************************************/
-global.appRoot = path.resolve(__dirname);
+global.appRoot = path.join(path.resolve("./"), '/');
 global.win;
+
+/************************************************************************
+ *  Log
+ ************************************************************************/
+log.transports.file.level = 'info';
+log.transports.file.file = global.appRoot + 'log.log';
+log.info("App started. Root path: " + global.appRoot);
+unhandled({logger: log.error});
 
 /************************************************************************
  *  Start components
@@ -37,3 +48,20 @@ function createWindow() {
 }
 
 app.on('ready', createWindow)
+
+function db() {
+  const db = new sqlite3.Database('./file.db');
+  db.serialize(function () {
+    db.run("CREATE TABLE Products (name, barcode, quantity)", () => {});
+  
+    db.run("INSERT INTO Products VALUES (?, ?, ?)", ['product001', 'xxxxx', 20]);
+    db.run("INSERT INTO Products VALUES (?, ?, ?)", ['product002', 'xxxxx', 40]);
+    db.run("INSERT INTO Products VALUES (?, ?, ?)", ['product003', 'xxxxx', 60]);
+  
+    db.each("SELECT * FROM Products", function (err, row) {
+      console.log(row);
+    });
+  });
+}
+
+db();
