@@ -11,6 +11,10 @@ ipcRenderer
     .on('getAllMetadata-res', (event, obj) => {
         console.log("Event 'getAllMetadata-res' received. Received data: ");
         console.log(obj);
+    })
+    .on('paths-res', (event, res) => {
+        console.log("Event 'paths-res' received. Received data: ");
+        console.log(res);
     });
 
 /************************************************************************
@@ -19,6 +23,9 @@ ipcRenderer
 function onLoad() {
     ipcRenderer.send('getAllMetadata');
     console.log("Event 'getAllMetadata' sent.");  
+
+    ipcRenderer.send('paths');
+    console.log("Event 'paths' sent.");  
 };
 onLoad();
 

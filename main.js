@@ -10,14 +10,16 @@ console.log("Starting node " + process.version);
 /************************************************************************
  *  Globals
  ************************************************************************/
-global.appRoot = path.join(path.resolve("./"), '/');
+global.appRoot = process.env.PORTABLE_EXECUTABLE_DIR 
+  ? process.env.PORTABLE_EXECUTABLE_DIR 
+  : path.resolve("./");
 global.win;
 
 /************************************************************************
  *  Log
  ************************************************************************/
 log.transports.file.level = 'info';
-log.transports.file.file = global.appRoot + 'log.log';
+log.transports.file.file = path.join(global.appRoot, 'log.log');
 log.info("App started. Root path: " + global.appRoot);
 unhandled({logger: log.error});
 

@@ -27,20 +27,28 @@
 
   "build": {
     "productName": "System Randomizer",
-    "appId": "com.gikkman.sysrand",
-    "prune": true,
+    "appId": "823a93c5-8525-49b1-9e65-0ea30cf8d19e",
     "win": {
       "target": [
-        "portable"
-      ]
+        "portable", "nsis-web", "nsis", "zip"
+      ],
+      "icon": "icons/win.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "installerIcon": "icons/win.ico",
+      "installerHeaderIcon": "icons/win.ico",
+      "allowToChangeInstallationDirectory": true
+    },
+    "nsisWeb": {
+      "oneClick": true
     },
     "portable": {
       "unpackDirName": "unpack",
       "artifactName": "System Randomizer.exe"
     },
     "directories": {
-      "output": "./build",
-      "buildResources": "electron/buildResources"
+      "output": "./build"
     }
   }
 }
