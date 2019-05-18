@@ -1,13 +1,24 @@
 const sqlite = require('sqlite');
 const path = require('path');
+const log = require('electron-log');
 
 const dbFilePath = path.join(global.appRoot, 'metadata.sqlite');
 let db;
 
 let init = async () => {
-  db = await sqlite.open(dbFilePath, {cached: true});
-  await db.migrate({ force: 'last' });
+  db = await sqlite.open(dbFilePath, {Promise, cached: true, trace: log.silly});
+  await db.migrate({ force: 'last' });  
 };
-init();
 
-module.exports.database = db;
+let get = async(sql, params) => {
+  return await db.get(sql, params);
+}
+
+let run = async(sql, params) => {
+  return await db.run(sql, params);
+}
+
+module.exports.get = get;
+module.exports.run = run;
+
+init();

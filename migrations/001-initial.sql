@@ -1,12 +1,9 @@
 -- Up
 CREATE TABLE "gameMetadata" (
-    "metadataId" INTEGER PRIMARY KEY AUTOINCREMENT, 
+    "fileHash" TEXT PRIMARY KEY NOT NULL,
     "title" TEXT NOT NULL, 
-    "fileHash" TEXT NOT NULL, 
-    "completed" BOOLEAN DEFAULT 0
+    "completed" BOOLEAN NOT NULL DEFAULT 0
 );
-
-CREATE UNIQUE INDEX "gameMetadata_fileHash" ON "gameMetadata" ("fileHash");
 
 -- Down
 DROP TABLE "gameMetadata";
