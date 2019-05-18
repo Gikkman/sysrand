@@ -8,36 +8,36 @@
     "postinstall": "electron-builder install-app-deps",
     "release-this": "build"
   },
-
   "keywords": [],
   "author": "",
   "license": "Apache 2.0",
-
   "dependencies": {
     "electron-log": "^3.0.5",
     "electron-unhandled": "^2.2.0",
     "express": "^4.16.4",
-    "sqlite3": "^4.0.8"
+    "sqlite": "^3.0.3"
   },
-
   "devDependencies": {
     "electron": "^5.0.1",
     "electron-builder": "^20.40.2"
   },
-
   "build": {
+    "asar": false,
     "productName": "System Randomizer",
     "appId": "823a93c5-8525-49b1-9e65-0ea30cf8d19e",
     "win": {
       "target": [
-        "portable", "nsis-web", "nsis", "zip"
+        "portable",
+        "nsis-web",
+        "nsis",
+        "zip"
       ],
-      "icon": "icons/win.ico"
+      "icon": "assets/win.ico"
     },
     "nsis": {
       "oneClick": false,
-      "installerIcon": "icons/win.ico",
-      "installerHeaderIcon": "icons/win.ico",
+      "installerIcon": "assets/win.ico",
+      "installerHeaderIcon": "assets/win.ico",
       "allowToChangeInstallationDirectory": true
     },
     "nsisWeb": {
@@ -48,7 +48,7 @@
       "artifactName": "System Randomizer.exe"
     },
     "directories": {
-      "output": "./build"
+      "output": "./_build"
     }
   }
 }

@@ -1,18 +1,15 @@
-const {app, BrowserWindow} = require('electron')
-const url = require('url')
-const path = require('path')
-const sqlite3 = require('sqlite3');
+const {app, BrowserWindow} = require('electron');
+const url = require('url');
+const path = require('path');
 const log = require('electron-log');
 const unhandled = require('electron-unhandled');
-
-console.log("Starting node " + process.version);
 
 /************************************************************************
  *  Globals
  ************************************************************************/
 global.appRoot = process.env.PORTABLE_EXECUTABLE_DIR 
-  ? process.env.PORTABLE_EXECUTABLE_DIR 
-  : path.resolve("./");
+? process.env.PORTABLE_EXECUTABLE_DIR 
+: path.resolve("./");
 global.win;
 
 /************************************************************************
@@ -20,16 +17,20 @@ global.win;
  ************************************************************************/
 log.transports.file.level = 'info';
 log.transports.file.file = path.join(global.appRoot, 'log.log');
-log.info("App started. Root path: " + global.appRoot);
+log.transports.console.level = 'silly';
 unhandled({logger: log.error});
+
+log.info("Starting node " + process.version);
+log.info("App started. Root path: " + global.appRoot);
 
 /************************************************************************
  *  Start components
  ************************************************************************/
-require('./lib/server').init();
-require('./lib/bizhawk');
-require('./lib/filetree');
-require('./lib/gamemeta');
+require('./backend/server').init();
+require('./backend/repositories/database');
+require('./backend/bizhawk');
+require('./backend/filetree');
+require('./backend/gamemeta');
 
 /************************************************************************
  *  Main behaviour
@@ -41,7 +42,7 @@ function createWindow() {
     }
   });
   win.loadURL(url.format ({ 
-      pathname: path.join(__dirname, 'frontend/index.html'), 
+      pathname: path.join(__dirname, './frontend/index.html'), 
       protocol: 'file:', 
       slashes: true
   }));
@@ -50,20 +51,3 @@ function createWindow() {
 }
 
 app.on('ready', createWindow)
-
-function db() {
-  const db = new sqlite3.Database('./file.db');
-  db.serialize(function () {
-    db.run("CREATE TABLE Products (name, barcode, quantity)", () => {});
-  
-    db.run("INSERT INTO Products VALUES (?, ?, ?)", ['product001', 'xxxxx', 20]);
-    db.run("INSERT INTO Products VALUES (?, ?, ?)", ['product002', 'xxxxx', 40]);
-    db.run("INSERT INTO Products VALUES (?, ?, ?)", ['product003', 'xxxxx', 60]);
-  
-    db.each("SELECT * FROM Products", function (err, row) {
-      console.log(row);
-    });
-  });
-}
-
-db();

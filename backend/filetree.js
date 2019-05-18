@@ -97,6 +97,7 @@ function scanFlat(dirPath) {
 }
 
 function merge(origin, extensions) {
+    if(!extensions) return origin;
     Object.keys(extensions).forEach(function(key) { origin[key] = extensions[key]; });
     return origin;
 }

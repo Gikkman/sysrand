@@ -1,4 +1,6 @@
 const {ipcRenderer} = require('electron');
+const unhandled = require('electron-unhandled');
+unhandled();
 
 /************************************************************************
  *  Event listeners
