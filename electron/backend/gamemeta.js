@@ -6,7 +6,8 @@ const {app} = require('electron');
 /************************************************************************
  *  Variables
  ************************************************************************/
-let filePath = path.join(global.appRoot, "metadata.json");
+let appRoot = process.env.PORTABLE_EXECUTABLE_DIR ? process.env.PORTABLE_EXECUTABLE_DIR : path.resolve('./');
+let filePath = path.join(appRoot, "metadata.json");
 let metaData;
 
 /************************************************************************

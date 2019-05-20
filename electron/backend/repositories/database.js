@@ -2,7 +2,9 @@ const sqlite = require('sqlite');
 const path = require('path');
 const log = require('electron-log');
 
-const dbFilePath = path.join(global.appRoot, 'metadata.sqlite');
+let appRoot = process.env.PORTABLE_EXECUTABLE_DIR ? process.env.PORTABLE_EXECUTABLE_DIR : path.resolve('./');
+
+const dbFilePath = path.join(appRoot, 'metadata.sqlite');
 let db;
 
 let init = async () => {

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "outDir": "compile",
+        "module": "commonjs",
+        "allowJs": true,
+        "target": "es2017",
+        "sourceMap": true,
+    },
+    "include": [
+        "./electron/**/*"
+    ]
+}

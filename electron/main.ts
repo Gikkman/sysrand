@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron');
+import {app, BrowserWindow} from 'electron';
 const url = require('url');
 const path = require('path');
 const log = require('electron-log');
@@ -7,21 +7,19 @@ const unhandled = require('electron-unhandled');
 /************************************************************************
  *  Globals
  ************************************************************************/
-global.appRoot = process.env.PORTABLE_EXECUTABLE_DIR 
-? process.env.PORTABLE_EXECUTABLE_DIR 
-: path.resolve("./");
-global.win;
+var appRoot: string = process.env.PORTABLE_EXECUTABLE_DIR ? process.env.PORTABLE_EXECUTABLE_DIR : path.resolve('./');
+var window: BrowserWindow;
 
 /************************************************************************
  *  Log
  ************************************************************************/
 log.transports.file.level = 'info';
-log.transports.file.file = path.join(global.appRoot, 'log.log');
+log.transports.file.file = path.join(appRoot, 'log.log');
 log.transports.console.level = 'silly';
 unhandled({logger: log.error});
 
 log.info("Starting node " + process.version);
-log.info("App started. Root path: " + global.appRoot);
+log.info("App started. Root path: " + appRoot);
 
 /************************************************************************
  *  Start components
@@ -36,18 +34,17 @@ require('./backend/gamemeta');
  *  Main behaviour
  ************************************************************************/
 function createWindow() { 
-  win = new BrowserWindow({width: 800, height: 600, 
+  window = new BrowserWindow({width: 800, height: 600, 
     webPreferences: {
       nodeIntegration: true
     }
   });
-  win.loadURL(url.format ({ 
+  window.loadURL(url.format ({ 
       pathname: path.join(__dirname, './frontend/index.html'), 
       protocol: 'file:', 
       slashes: true
   }));
-  win.webContents.openDevTools()
-  global.win = win;
+  window.webContents.openDevTools()
 }
 
 app.on('ready', createWindow)

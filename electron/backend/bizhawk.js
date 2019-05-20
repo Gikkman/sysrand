@@ -50,7 +50,8 @@ function saveStatePath(file) {
 }
 
 function ensureStateDir() {
-    let stateDir = path.join(global.appRoot, "states");
+    let appRoot = process.env.PORTABLE_EXECUTABLE_DIR ? process.env.PORTABLE_EXECUTABLE_DIR : path.resolve('./');
+    let stateDir = path.join(appRoot, "states");
     try {
         fs.mkdirSync(stateDir, { recursive: true });
         console.log("New save state directory created: " + stateDir);

@@ -2,28 +2,30 @@
   "name": "sysrand",
   "version": "1.0.0",
   "description": "App for making Bizhawk load random games",
-  "main": "main.js",
+  "main": "compile/main.js",
   "scripts": {
+    "prestart": "npm run compile",
     "start": "electron .",
+    "compile": "tsc",
+    "postcompile": "copyfiles -u 1 electron/**/*.html electron/**/*.css compile/",
     "postinstall": "electron-builder install-app-deps",
     "release-this": "build"
   },
   "keywords": [],
   "author": "",
   "license": "Apache 2.0",
-  
   "dependencies": {
     "electron-log": "^3.0.5",
     "electron-unhandled": "^2.2.0",
     "express": "^4.16.4",
     "sqlite": "^3.0.3"
   },
-
   "devDependencies": {
+    "copyfiles": "^2.1.0",
     "electron": "^5.0.1",
-    "electron-builder": "^20.40.2"
+    "electron-builder": "^20.40.2",
+    "typescript": "^3.4.5"
   },
-
   "build": {
     "asar": false,
     "productName": "System Randomizer",

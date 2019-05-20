@@ -66,4 +66,5 @@ gamemeta.json
 file.db
 metadata.json
 build/
+compile/
 metadata.sqlite
